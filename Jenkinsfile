@@ -9,7 +9,9 @@ pipeline {
             steps {
                 script {
                     echo "building the application..."
+                    dir('demo-projects/module-8/java-maven-app') {
                     sh 'mvn package'
+                    }
                 }
             }
         }
