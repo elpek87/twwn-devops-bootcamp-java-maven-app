@@ -8,8 +8,10 @@ pipeline {
         stage("build jar") {
             steps {
                 script {
+                    dir('demo-projects/module-8/java-maven-app') {
                     echo "building the application..."
                     sh 'mvn package'
+                    }
                 }
             }
         }
