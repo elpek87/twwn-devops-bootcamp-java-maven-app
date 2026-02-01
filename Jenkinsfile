@@ -1,3 +1,5 @@
+def gv
+
 pipeline {
     agent any
     tools {
@@ -5,36 +7,34 @@ pipeline {
     }
 
     stages {
-        stage("build jar") {
+        stage("init") {
             steps {
                 script {
-                    dir('demo-projects/module-8/java-maven-app') {
-                    echo "building the application..."
-                    sh 'mvn package'
-                    }
+                    gv = load "script.groovy"
                 }
             }
         }
+
+        stage("build jar") {
+            steps {
+                script {
+                    gv.buildJar()
+                    }
+                }
+            }
 
         stage("build image") {
             steps {
                 script {
-                    echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        dir('demo-projects/module-8/java-maven-app') {
-                        sh 'docker build -t elpek87/demo-app:jma-2.0 .'
-                        sh 'echo $PASS | docker login -u $USER --password-stdin'
-                        sh 'docker push elpek87/demo-app:jma-2.0'
-                    }
+                    gv.buildImage()
                     }
                 }
             }
-        }
 
         stage("deploy") {
             steps {
                 script {
-                    echo "deploying the application"
+                    gv.deployApp()
                 }
             }
         }
