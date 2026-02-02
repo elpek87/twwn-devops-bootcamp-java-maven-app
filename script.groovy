@@ -1,13 +1,10 @@
 def buildJar() {
     echo 'building the application...'
-    dir('demo-projects/module-8/java-maven-app') {
-        sh 'mvn -B clean package'
-    }
+    sh 'mvn -B clean package'
 }
 
 def buildImage() {
     echo "building the docker image..."
-    dir('demo-projects/module-8/java-maven-app') {
         withCredentials([usernamePassword(
             credentialsId: 'dockerhub-repo',
             passwordVariable: 'PASS',
@@ -17,7 +14,6 @@ def buildImage() {
             sh 'echo $PASS | docker login -u $USER --password-stdin'
             sh 'docker push elpek87/demo-app:jma-2.0'
         }
-    }
 }
 
 def deployApp() {
