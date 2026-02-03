@@ -1,4 +1,3 @@
-#!/usr/bin/env groovy
 def gv
 
 pipeline {
@@ -6,38 +5,33 @@ pipeline {
     tools {
         maven 'maven-3.9'
     }
-
     stages {
-        stage("init") {
+        stage('build app') {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    echo 'building the application...'
+                    sh 'mvn package'
                 }
             }
         }
-
-        stage("build jar") {
+        stage('build image') {
             steps {
                 script {
-                    gv.buildJar()
+                    echo "building the docker image..."
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                        sh "docker build -t elpek87/demo-app:jma-4.0 ."
+                        sh 'echo $PASS | docker login -u $USER --password-stdin'
+                        sh "docker push elpek87/demo-app:jma-4.0"
                     }
-                }
-            }
-
-        stage("build image") {
-            steps {
-                script {
-                    gv.buildImage()
-                    }
-                }
-            }
-
-        stage("deploy") {
-            steps {
-                script {
-                    gv.deployApp()
                 }
             }
         }
-    }
+        stage('deploy') {
+            steps {
+                script {
+                    echo 'deploying docker image...'
+                }
+            }
+        }
+   }
 }
