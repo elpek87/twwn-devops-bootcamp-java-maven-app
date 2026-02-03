@@ -1,5 +1,9 @@
 #!/usr/bin/env groovy
-def gv
+
+library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
+   [$class: 'GitSCMSource',
+   remote: 'https://github.com/elpek87/twwn-devops-bootcamp-jenkins-shared-library.git',
+   credentialsId: 'GitHub-token'])
 
 pipeline {
     agent any
@@ -19,7 +23,7 @@ pipeline {
         stage("build jar") {
             steps {
                 script {
-                    gv.buildJar()
+                    buildJar()
                     }
                 }
             }
@@ -27,7 +31,9 @@ pipeline {
         stage("build image") {
             steps {
                 script {
-                    gv.buildImage()
+                    buildImage 'elpek87/demo-app:jma-3.0'
+		    dockerLogin()
+		    dockerPush 'elpek87/demo-app:jma-3.0'
                     }
                 }
             }
@@ -41,3 +47,4 @@ pipeline {
         }
     }
 }
+
