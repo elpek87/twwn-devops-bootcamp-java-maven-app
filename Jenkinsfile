@@ -46,5 +46,25 @@ pipeline {
                 }
             }
         }
+
+        stage('commit version update') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github-repository', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    sh 'git config --user.email "jenkins@example.com"'
+                    sh 'git config --user.name "Jenkins"'
+
+                    sh 'git status'
+                    sh 'git branch'
+                    sh 'git config --list'
+
+                    sh "git remote set-url origin https://${USER}:${PASS}@github.com/elpek87/twwn-devops-bootcamp-java-maven-app.git"
+                    sh 'git add .'
+                    sh 'git commit -m "CI: Version Bump"'
+                    sh 'git push origin HEAD:jenkins-jobs'
+                    }
+                }
+            }
+        }
    }
 }
