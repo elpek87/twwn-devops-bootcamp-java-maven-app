@@ -1,6 +1,6 @@
 #!/usr/bin.env groovy
 
-pipeline {   
+pipeline {
     agent any
     stages {
         stage("test") {
@@ -25,6 +25,6 @@ pipeline {
                     echo "Deploying the application..."
                 }
             }
-        }               
+        }
     }
-} 
+}
