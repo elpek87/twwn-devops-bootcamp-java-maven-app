@@ -1,43 +1,30 @@
-#!/usr/bin/env groovy
-def gv
+#!/usr/bin.env groovy
 
-pipeline {
+pipeline {   
     agent any
-    tools {
-        maven 'maven-3.9'
-    }
-
     stages {
-        stage("init") {
+        stage("test") {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    echo "Testing the application..."
+
                 }
             }
         }
-
-        stage("build jar") {
+        stage("build") {
             steps {
                 script {
-                    gv.buildJar()
-                    }
+                    echo "Building the application..."
                 }
             }
-
-        stage("build image") {
-            steps {
-                script {
-                    gv.buildImage()
-                    }
-                }
-            }
+        }
 
         stage("deploy") {
             steps {
                 script {
-                    gv.deployApp()
+                    echo "Deploying the application..."
                 }
             }
-        }
+        }               
     }
-}
+} 
