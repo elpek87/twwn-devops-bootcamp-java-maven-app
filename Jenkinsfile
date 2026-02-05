@@ -11,7 +11,7 @@ pipeline {
         maven 'maven-3.9'
     }
     environment {
-        IMAGE_NAME = 'elpek87/demo-app:1.0'
+        IMAGE_NAME = 'elpek87/demo-app:java-maven-1.0'
     }
     stages {
         stage('build app') {
