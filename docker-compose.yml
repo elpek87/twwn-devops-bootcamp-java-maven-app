@@ -1,0 +1,11 @@
+services:
+  java-maven-app:
+    image: elpek87/demo-app:java-maven-1.0
+    ports:
+      - 8080:8080
+  postgres:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=passwd!
