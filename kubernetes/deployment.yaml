@@ -14,10 +14,10 @@ spec:
       labels:
         app: $APP_NAME
     spec:
-      imagePullSecrets: my-registry-key
+      imagePullSecrets: aws-registry-key
       containers:
         - name: $APP_NAME
-          image: elpek87/demo-app:${IMAGE_NAME}
+          image: ${DOCKER_REPOSITORY}:${IMAGE_NAME}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

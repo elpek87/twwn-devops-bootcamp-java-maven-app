@@ -5,6 +5,10 @@ pipeline {
     tools {
         maven 'maven-3.9'
     }
+    environment {
+        DOCKER_REPOSITORY_SERVER = 'xxxx87839758.dkr.ecr.eu-central-1.amazonaws.com'
+        DOCKER_REPOSITORY = "${DOCKER_REPO_SERVER}/demo-app"
+    }
     stages {
         stage('increment version') {
             steps {
@@ -31,10 +35,10 @@ pipeline {
             steps {
                 script {
                     echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]){
-                        sh "docker build -t elpek87/demo-app:${IMAGE_NAME} ."
-                        sh 'echo $PASS | docker login -u $USER --password-stdin'
-                        sh "docker push elpek87/demo-app:${IMAGE_NAME}"
+                    withCredentials([usernamePassword(credentialsId: 'ecr-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                        sh "docker build -t ${DOCKER_REPOSITORY}:${IMAGE_NAME} ."
+                        sh 'echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPOSITORY_SERVER}'
+                        sh "docker push ${DOCKER_REPOSITORY}:${IMAGE_NAME}"
                     }
                 }
             }
@@ -43,11 +47,14 @@ pipeline {
         stage('deploy') {
             environment {
                 AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
-                AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
+                APP_NAME = 'demo-app'
             }
             steps {
                 script {
                    echo 'deploying docker image...'
+                   sh 'envsubst  < kubernetes/deployment.yaml | kubectl apply -f -'
+                   sh 'envsubst  < kubernetes/service.yaml | kubectl apply -f -'
                 }
             }
         }
