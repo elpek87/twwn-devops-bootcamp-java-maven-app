@@ -2,28 +2,6 @@ provider "aws" {
     region = var.region
 }
 
-variable vpc_cidr_block {
-    default = "10.0.0.0/16"
-}
-variable subnet_cidr_block {
-    default = "10.0.10.0/24"
-}
-variable avail_zone {
-    default = "eu-central-1a"
-}
-variable env_prefix {
-    default = "dev"
-}
-variable my_ip {
-    default = "109.241.90.130"
-}
-variable instance_type {
-    default = "t4g.micro"
-}
-
-variable region {
-    default = "eu-central-1"
-}
 
 
 resource "aws_vpc" "myapp-vpc" {
@@ -103,14 +81,6 @@ data "aws_ami" "latest-amazon-linux-image" {
     }
 }
 
-output "aws_ami_id" {
-    value = data.aws_ami.latest-amazon-linux-image.id
-}
-
-output "ec2_public_ip" {
-    value = aws_instance.myapp-server.public_ip
-}
-
 resource "aws_instance" "myapp-server" {
     ami = data.aws_ami.latest-amazon-linux-image.id
     instance_type = var.instance_type
@@ -130,4 +100,8 @@ resource "aws_instance" "myapp-server" {
     tags = {
         Name: "${var.env_prefix}-server"
     }
+}
+
+output "ec2_public_ip" {
+    value = aws_instance.myapp-server.public_ip
 }
