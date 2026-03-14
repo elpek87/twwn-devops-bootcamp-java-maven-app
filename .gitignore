@@ -2,6 +2,7 @@
 target
 # local .terraform dir
 .terraform/*
+terraform/.terraform/*
 
 # tf stare files
 *.tfstate
