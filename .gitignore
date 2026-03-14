@@ -1,2 +1,11 @@
 .idea/*
 target
+# local .terraform dir
+.terraform/*
+
+# tf stare files
+*.tfstate
+*.tfstate.*
+
+# tf variable files may include sensitive data
+*.tfvars
