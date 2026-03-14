@@ -1,4 +1,4 @@
-/*terraform {
+terraform {
     required_version = ">= 0.12"
     backend  "s3" {
         bucket = "rtf-bucket-s3"
@@ -6,7 +6,7 @@
         region = "eu-central-1"
 
     }
-}*/
+}
 
 provider "aws" {
     region = var.region
