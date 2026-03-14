@@ -53,7 +53,7 @@ pipeline {
                 dir('terraform') {
                     sh "terraform init"
                     sh "terraform apply --auto-approve"
-                    EC2_PUBLIC_IP = sh(
+                    env.EC2_PUBLIC_IP = sh(
                         script: "terraform output ec2_public_ip",
                         returnStdout: true
                     ).trim()
@@ -72,7 +72,7 @@ pipeline {
                     sleep(time: 90, unit: "SECONDS")
 
                     echo 'deploying docker image to EC2...'
-                    echo "${EC2_PUBLIC_IP}"
+                    echo "${env.EC2_PUBLIC_IP}"
 
                     def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${DOCKER_CREDS_USR} ${DOCKER_CRED_PSW}"
                     def ec2Instance = "ec2-user@${EC2_PUBLIC_IP}"
