@@ -1,0 +1,44 @@
+---
+- name: install docker
+  hosts: all
+  become: yes
+  vars:
+    compose_version: "v5.1.0"
+  tasks:
+    - name: install docker
+      dnf:
+        name: docker
+        state: latest
+        update_cache: true
+
+    - name: create global docker cli plugin directory
+      file:
+        path: /usr/local/lib/docker/cli-plugins
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: get architecture of remote machine
+      shell: uname -m
+      register: remote_arch
+
+    - name: download docker compose plugin
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/{{ compose_version }}/docker-compose-linux-{{ remote_arch.stdout }}"
+        dest: /usr/local/lib/docker/cli-plugins/docker-compose
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: enable and start docker
+      systemd:
+        name: docker
+        enabled: true
+        state: started
+
+
+
+
+
+

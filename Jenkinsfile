@@ -1,41 +1,16 @@
-#!/usr/bin/env groovy
-def gv
-
 pipeline {
     agent any
-    tools {
-        maven 'maven-3.9'
-    }
-
     stages {
-        stage("init") {
+        stage("copy files to ansible server") {
             steps {
                 script {
-                    gv = load "script.groovy"
-                }
-            }
-        }
+                    echo "copying all necessary files to ansible control node"
+                    sshagent(['ansible-server-key'])
+                    sh "scp -o StrictHostKeyChecking=no ansible/* root@192.168.0.78:/root"
 
-        stage("build jar") {
-            steps {
-                script {
-                    gv.buildJar()
-                    }
-                }
-            }
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ec2-server-key', keyFileVariable: 'keyfile', usernameVariable: 'user')])
+                    sh "scp ${keyfile} root@192.168.0.78:/root/ssh-key.pem"
 
-        stage("build image") {
-            steps {
-                script {
-                    gv.buildImage()
-                    }
-                }
-            }
-
-        stage("deploy") {
-            steps {
-                script {
-                    gv.deployApp()
                 }
             }
         }
